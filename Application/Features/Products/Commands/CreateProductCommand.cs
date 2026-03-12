@@ -32,13 +32,13 @@ public class CreateProductCommandHandler(IProductRepository repository, IValidat
 
         try
         {
-            var response = await repository.CreateProductAsync(
+            var createProduct = await repository.CreateProductAsync(
                 request.Name,
                 request.Description,
                 request.Price,
                 request.StockQuantity);
 
-            if (response == null)
+            if (createProduct == null)
             {
                 logger.LogError("Database error: SPC failed to return the created product {ProductName}", request.Name);
                 await unitOfWork.RollbackTransactionAsync(cancellationToken);
@@ -52,14 +52,14 @@ public class CreateProductCommandHandler(IProductRepository repository, IValidat
             }
             
             await unitOfWork.CommitTransactionAsync(cancellationToken);
-            logger.LogInformation("Successfully created product with ID: {ProductId}", response.Id);
+            logger.LogInformation("Successfully created product with ID: {ProductId}", createProduct.ProductId);
             
             return new ApiResponse<ProductResponseDto>
             {
                 Success = true,
                 StatusCode = 200,
                 Message = "Product created successfully.",
-                Data = mapper.Map<ProductResponseDto>(response)
+                Data = mapper.Map<ProductResponseDto>(createProduct)
             };
         }
         catch (Exception e)

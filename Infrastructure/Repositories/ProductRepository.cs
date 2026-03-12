@@ -7,20 +7,48 @@ namespace Infrastructure.Repositories;
 
 public class ProductRepository (ECommerceDbContext context) : IProductRepository
 {
-    public async Task<Product> CreateProductAsync(
-        string Name,
-        string Description,
-        decimal Price,
-        decimal StockQuantity
-        )
+    public async Task<Product> CreateProductAsync(string name, string description, decimal price, decimal stockQuantity)
     {
-        FormattableString spc = $"EXEC spcCreateProduct {Name}, {Description}, {Price}, {StockQuantity}";
+        FormattableString spc = $"EXEC spcCreateProduct @Name={name}, @Description={description}, @Price={price}, @StockQuantity={stockQuantity}";
 
-        var results = await context.Products
+        var response = await context.Products
             .FromSqlInterpolated(spc)
             .AsNoTracking()
             .FirstAsync();
         
-        return results;
+        return response;
+    }
+
+    public async Task<Product> UpdateProductAsync(Guid productId, string name, string description, decimal price, decimal stockQuantity)
+    {
+        FormattableString spc = $"Exec spcUpdateProduct @ProductId={productId}, @Name={name}, @Description={description}, @Price={price}, @StockQuantity={stockQuantity}";
+
+        var response = await context.Products
+            .FromSqlInterpolated(spc)
+            .AsNoTracking()
+            .FirstAsync();
+        
+        return response;
+    }
+
+    public async Task<bool> HasActiveOrdersAsync(Guid productId)
+    {
+        return await Task.FromResult(false);
+    }
+
+    public async Task<bool> SoftDeleteProductAsync(Guid productId)
+    {
+        var product = await context.Products.FindAsync(productId);
+
+        if (product == null || product.IsDeleted)
+        {
+            return false;
+        }
+
+        product.IsDeleted = true;
+        
+        context.Products.Update(product);
+
+        return true;
     }
 }

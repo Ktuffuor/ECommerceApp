@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.Validators;
 
 namespace Application.Features.Products.Commands;
 
