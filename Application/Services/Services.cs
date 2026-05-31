@@ -6,9 +6,9 @@ namespace Application.Services;
 
 public static class Services
 {
-    public static IServiceCollection AddServices(this IServiceCollection services)
+    /*public static IServiceCollection AddServices(this IServiceCollection services)
     {
         
-    }
+    }*/
     
 }

@@ -8,13 +8,13 @@ namespace Infrastructure.Repositories;
 public class ProductRepository (ECommerceDbContext context) : IProductRepository
 {
     public async Task<Product> CreateProductAsync(
-        string Name,
-        string Description,
-        decimal Price,
-        decimal StockQuantity
+        string name,
+        string description,
+        decimal price,
+        decimal stockQuantity
         )
     {
-        FormattableString spc = $"EXEC spcCreateProduct {Name}, {Description}, {Price}, {StockQuantity}";
+        FormattableString spc = $"EXEC spcCreateProduct {name}, {description}, {price}, {stockQuantity}";
 
         var results = await context.Products
             .FromSqlInterpolated(spc)

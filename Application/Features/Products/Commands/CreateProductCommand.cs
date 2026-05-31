@@ -1,6 +1,5 @@
 using Application.DTOs;
 using Application.Interfaces;
-using Domain.Entities;
 using FluentValidation;
 using MediatR;
 
@@ -31,7 +30,14 @@ public class CreateProductCommandHandler(IProductRepository repository, IValidat
             request.Description,
             request.Price,
             request.StockQuantity);
-        
-        return product
+
+        return new ProductResponseDto
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            StockQuantity = product.StockQuantity
+        };
     }
 }
