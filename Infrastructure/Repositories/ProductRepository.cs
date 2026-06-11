@@ -7,28 +7,27 @@ namespace Infrastructure.Repositories;
 
 public class ProductRepository (ECommerceDbContext context) : IProductRepository
 {
-    public async Task<Product> CreateProductAsync(string name, string description, decimal price, decimal stockQuantity)
+    public async Task<Product?> CreateProductAsync(string name, string description, decimal price, decimal stockQuantity, string brand)
     {
-        FormattableString spc = $"EXEC spcCreateProduct @Name={name}, @Description={description}, @Price={price}, @StockQuantity={stockQuantity}";
+        var result = await context.Products
+            .FromSqlInterpolated($"EXEC spcCreateProduct {name}, {description}, {price}, {stockQuantity}")
+            .ToListAsync(); 
 
-        var response = await context.Products
-            .FromSqlInterpolated(spc)
-            .AsNoTracking()
-            .FirstAsync();
-        
-        return response;
+        return result.FirstOrDefault();
     }
 
-    public async Task<Product> UpdateProductAsync(Guid productId, string name, string description, decimal price, decimal stockQuantity)
+    public async Task<Product?> GetProductByIdAsync(Guid productId)
     {
-        FormattableString spc = $"Exec spcUpdateProduct @ProductId={productId}, @Name={name}, @Description={description}, @Price={price}, @StockQuantity={stockQuantity}";
+        var result = await context.Products
+            .FromSqlInterpolated($"EXEC spcGetProductById {productId}").ToListAsync();
+        return result.FirstOrDefault();
+    }
 
-        var response = await context.Products
-            .FromSqlInterpolated(spc)
-            .AsNoTracking()
-            .FirstAsync();
-        
-        return response;
+    public async Task<Product?> UpdateProductAsync(Guid productId, string name, string description, decimal price, decimal stockQuantity, string brand)
+    {
+        var result = await context.Products
+            .FromSqlInterpolated($"Exec spcUpdateProduct @productId={productId}, @productName={name}, @productDesc={description}, @productPrice={price}, @productStockQty={stockQuantity},  @productBrand={brand}").ToListAsync();
+        return result.FirstOrDefault();
     }
 
     public async Task<bool> HasActiveOrdersAsync(Guid productId)

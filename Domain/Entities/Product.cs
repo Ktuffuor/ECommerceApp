@@ -1,14 +1,17 @@
-﻿namespace Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain.Entities;
 
 public class Product
 {
     public Guid ProductId { get; set; }
-    public string? Name { get; set; } = string.Empty;
-    public string? Description { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public string? PictureUrl { get; set; } = string.Empty;
-    public string? Brand { get; set; } = string.Empty;
-    public int StockQuantity { get; set; }
+    public string? ProductName { get; set; } = string.Empty;
+    public string? ProductDesc { get; set; } = string.Empty;
+    public decimal ProductPrice { get; set; }
+    public string? ProductPicUrl { get; set; } = string.Empty;
+    public string? ProductBrand { get; set; } = string.Empty;
+    public int ProductStockQty { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [NotMapped]
     public bool IsDeleted { get; set; } = false;
 }

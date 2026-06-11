@@ -11,10 +11,11 @@ namespace Application.Features.Products.Commands;
 public class UpdateProductCommand : IRequest<ApiResponse<ProductResponseDto>>
 {
     public Guid ProductId { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public int StockQuantity { get; set; }
+    public string ProductName { get; set; } = string.Empty;
+    public string ProductDesc { get; set; } = string.Empty;
+    public decimal ProductPrice { get; set; }
+    public int ProductStockQty { get; set; }
+    public string ProductBrand { get; set; }
 }
 
 public class UpdateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductRepository repository, ILogger<UpdateProductCommandHandler> logger, IValidator<UpdateProductCommand> validator) : IRequestHandler<UpdateProductCommand, ApiResponse<ProductResponseDto>>
@@ -36,12 +37,13 @@ public class UpdateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork,
         {
             var updateProduct = await repository.UpdateProductAsync(
                 request.ProductId,
-                request.Name,
-                request.Description,
-                request.Price,
-                request.StockQuantity);
+                request.ProductName,
+                request.ProductDesc,
+                request.ProductPrice,
+                request.ProductStockQty,
+                request.ProductBrand);
 
-            if (updateProduct != null)
+            if (updateProduct == null)
             {
                 logger.LogError("Database error: SPC failed to return the update product {ProductId}", request.ProductId);
                 await unitOfWork.RollbackTransactionAsync(cancellationToken);
@@ -50,7 +52,7 @@ public class UpdateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork,
                 {
                     Success = false,
                     StatusCode = 500,
-                    Message = "A database error occurred while updating the product.",
+                    Message = "Product not found or a database error occurred while updating.",
                     Data = mapper.Map<ProductResponseDto>(updateProduct)
                 };
             }

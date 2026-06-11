@@ -1,12 +1,11 @@
 using Common.CommonResponse;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
+
 
 namespace Api.Middlewares;
 
-public class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -24,9 +23,10 @@ public class GlobalExceptionHandler : IExceptionHandler
         }
         else
         {
+            logger.LogError(exception, "An unhandled server exception occurred.");
+
             response.StatusCode = StatusCodes.Status500InternalServerError;
-            response.Message = "An unexpected server error occured. Please try again later.";
-            response.Message = exception.Message;
+            response.Message = "An unexpected server error occurred. Please try again later.";
         }
 
         httpContext.Response.StatusCode = response.StatusCode;

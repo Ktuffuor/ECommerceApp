@@ -9,14 +9,14 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
         RuleFor(x => x.ProductId)
             .NotEmpty().WithMessage("A valid Product ID is required");
 
-        RuleFor(x => x.Name)
+        RuleFor(x => x.ProductName)
             .NotEmpty().WithMessage("A valid Product Name is required")
             .MaximumLength(100).WithMessage("A valid Product Name cannot exceed 100 characters");
         
-        RuleFor(x => x.Price)
+        RuleFor(x => x.ProductPrice)
             .GreaterThan(0).WithMessage("A valid Price is required");
         
-        RuleFor(x => x.StockQuantity)
+        RuleFor(x => x.ProductStockQty)
             .GreaterThanOrEqualTo(0).WithMessage("A valid StockQuantity is required");
     }
 }
