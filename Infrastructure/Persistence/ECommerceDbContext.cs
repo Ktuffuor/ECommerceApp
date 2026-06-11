@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<Product>()
-                .Property(p => p.Price)
+                .Property(p => p.ProductPrice)
                 .HasColumnType("decimal(18,2)");
             
             modelBuilder.Entity<User>();

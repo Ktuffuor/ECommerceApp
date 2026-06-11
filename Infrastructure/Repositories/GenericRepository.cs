@@ -4,19 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : class
+public class GenericRepository<T>(ECommerceDbContext context) : IGenericRepository<T> where T : class
 {
-    private readonly ECommerceDbContext _context;
-
-    public GenericRepository(ECommerceDbContext context)
-    {
-        _context = context;
-    }
     public async Task<IReadOnlyList<T>> GetAllAsync(FormattableString spc)
     {
-        return await _context.Set<T>()
+        return await context.Set<T>()
             .FromSqlInterpolated(spc)
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    public async Task<int> AddAsync(FormattableString sqlQuery)
+    {
+        var result = await context.Database.SqlQuery<int>(sqlQuery).ToListAsync();
+        await context.SaveChangesAsync();
+        return result.FirstOrDefault();
+
     }
 }

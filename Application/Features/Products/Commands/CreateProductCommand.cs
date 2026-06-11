@@ -10,10 +10,11 @@ namespace Application.Features.Products.Commands;
 
 public class CreateProductCommand : IRequest<ApiResponse<ProductResponseDto>>
 {
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public int StockQuantity { get; set; }
+    public string ProductName { get; set; } = string.Empty;
+    public string ProductDesc { get; set; } = string.Empty;
+    public decimal ProductPrice { get; set; }
+    public int ProductStockQty { get; set; }
+    public string ProductBrand { get; set; } = string.Empty;
 }
 
 public class CreateProductCommandHandler(IProductRepository repository, IValidator<CreateProductCommand> validator, IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateProductCommandHandler> logger)
@@ -33,14 +34,15 @@ public class CreateProductCommandHandler(IProductRepository repository, IValidat
         try
         {
             var createProduct = await repository.CreateProductAsync(
-                request.Name,
-                request.Description,
-                request.Price,
-                request.StockQuantity);
+                request.ProductName,
+                request.ProductDesc,
+                request.ProductPrice,
+                request.ProductStockQty,
+                request.ProductBrand);
 
             if (createProduct == null)
             {
-                logger.LogError("Database error: SPC failed to return the created product {ProductName}", request.Name);
+                logger.LogError("Database error: SPC failed to return the created product {ProductName}", request.ProductName);
                 await unitOfWork.RollbackTransactionAsync(cancellationToken);
                 return new ApiResponse<ProductResponseDto>
                 {
@@ -64,7 +66,7 @@ public class CreateProductCommandHandler(IProductRepository repository, IValidat
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error during creating product {ProductName}", request.Name);
+            logger.LogError(e, "Error during creating product {ProductName}", request.ProductName);
             await  unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }

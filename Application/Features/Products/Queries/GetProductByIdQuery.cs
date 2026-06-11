@@ -1,8 +1,6 @@
-using System.Reflection.Metadata;
 using Application.DTOs;
 using Application.Interfaces;
 using Common.CommonResponse;
-using Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,34 +8,59 @@ namespace Application.Features.Products.Queries;
 
 public class GetProductByIdQuery : IRequest<ApiResponse<ProductResponseDto>>
 {
-    public Guid Id { get; set; }
+    public Guid ProductId { get; set; }
 }
 
-public class GetProductByIdQueryHandler : IRequest<ProductResponseDto>
+public class GetProductByIdQueryHandler(IProductRepository repository, ILogger<GetProductByIdQueryHandler> logger)
+    : IRequestHandler<GetProductByIdQuery, ApiResponse<ProductResponseDto>>
 {
-    private readonly IGenericRepository<ProductResponseDto> _repository;
-    private readonly ILogger<GetProductByIdQueryHandler> _logger;
-    public GetProductByIdQueryHandler(IGenericRepository<ProductResponseDto> repository, ILogger<GetProductByIdQueryHandler> logger)
-    {
-        _repository = repository;
-        _logger = logger;
-    }
-    
-    public async Task<ProductResponseDto?> Handle(GetProductByIdQuery request,
-        CancellationToken cancellationToken)
+    public async Task<ApiResponse<ProductResponseDto>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            FormattableString spc = $"spcGetProductById {request.Id}";
-            var result = await _repository.GetAllAsync(spc);
-            return result.FirstOrDefault();
+            var result = await repository.GetProductByIdAsync(request.ProductId);
+            
+            if (result == null)
+            {
+                logger.LogWarning("Product with Id {Id} was not found.", request.ProductId);
+                return new ApiResponse<ProductResponseDto>
+                {
+                    Success = false,
+                    StatusCode = 404,
+                    Message = $"Product with id: {request.ProductId} not found.",
+                    Data = null
+                };
+            }
+
+            return new ApiResponse<ProductResponseDto>
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = $"Product with id: {request.ProductId} retrieved successfully.",
+                Data = new ProductResponseDto
+                {
+                    ProductId = result.ProductId,
+                    ProductName = result.ProductName,
+                    ProductDesc = result.ProductDesc,
+                    ProductPrice = result.ProductPrice,
+                    ProductStockQty = result.ProductStockQty,
+                    ProductBrand =  result.ProductBrand
+                }
+            };
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error retrieving product with Id {Id}", request.Id);
-            throw;
+            logger.LogError(e, "An error occurred while retrieving product with Id {Id}", request.ProductId);
+            
+            return new ApiResponse<ProductResponseDto>
+            {
+                Success = false,
+                StatusCode = 500,
+                Message = "An internal server error occurred while processing your request.",
+                Data = null
+            };
         }
     }
-    
 }
+
 

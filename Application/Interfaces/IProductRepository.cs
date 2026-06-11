@@ -4,8 +4,9 @@ namespace Application.Interfaces;
 
 public interface IProductRepository
 {
-    Task<Product> CreateProductAsync(string name, string description, decimal price, decimal stockQuantity);
-    Task<Product> UpdateProductAsync(Guid productId, string name, string description, decimal price, decimal stockQuantity);
+    Task<Product?> CreateProductAsync(string productName, string productDesc, decimal productPrice, decimal productStockQty, string productBrand);
+    Task<Product?> UpdateProductAsync(Guid productId, string productName, string productDesc, decimal productPrice, decimal productStockQty,  string productBrand);
+    Task<Product?> GetProductByIdAsync(Guid productId);
     Task<bool> HasActiveOrdersAsync(Guid productId);
     Task<bool> SoftDeleteProductAsync(Guid productId);
 }
