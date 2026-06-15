@@ -1,4 +1,4 @@
-using Application.DTOs;
+using Application.DTOs.ProductDto;
 using Application.Interfaces;
 using Common.CommonResponse;
 using AutoMapper;

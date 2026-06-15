@@ -22,6 +22,13 @@ public class ProductRepository (ECommerceDbContext context) : IProductRepository
             .FromSqlInterpolated($"EXEC spcGetProductById {productId}").ToListAsync();
         return result.FirstOrDefault();
     }
+    
+    public async Task<Product?> GetAllProductsAsync(string? searchText, int pageNumber, int pageSize)
+    {
+        var result = await context.Products
+            .FromSqlInterpolated($"EXEC spcGetAllProducts {searchText}, {pageNumber}, {pageSize}").ToListAsync();
+        return result.FirstOrDefault();
+    }
 
     public async Task<Product?> UpdateProductAsync(Guid productId, string name, string description, decimal price, decimal stockQuantity, string brand)
     {
