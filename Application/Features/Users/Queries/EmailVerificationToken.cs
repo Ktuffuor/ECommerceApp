@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Application.Features.Users;
+namespace Application.Features.Users.Queries;
 
 internal static class EmailVerificationToken
 {

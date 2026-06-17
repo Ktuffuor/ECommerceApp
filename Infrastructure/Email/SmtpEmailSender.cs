@@ -16,7 +16,7 @@ public class SmtpEmailSender(IOptions<EmailOptions> options, ILogger<SmtpEmailSe
         string confirmationToken,
         CancellationToken cancellationToken = default)
     {
-        var confirmationUrl = BuildConfirmationUrl(confirmationToken);
+        var confirmationUrl = BuildConfirmationUrl(email, confirmationToken);
 
         if (string.IsNullOrWhiteSpace(_options.Host))
         {
@@ -58,12 +58,15 @@ public class SmtpEmailSender(IOptions<EmailOptions> options, ILogger<SmtpEmailSe
         await smtpClient.SendMailAsync(message, cancellationToken);
     }
 
-    private string BuildConfirmationUrl(string confirmationToken)
+    private string BuildConfirmationUrl(string email, string confirmationToken)
     {
         var baseUrl = _options.ConfirmationBaseUrl.TrimEnd('/');
+        
+        // EscapeDataString safely encodes special characters (like the @ symbol in emails)
+        var encodedEmail = Uri.EscapeDataString(email);
         var encodedToken = Uri.EscapeDataString(confirmationToken);
 
-        return $"{baseUrl}/api/User/ConfirmEmail?token={encodedToken}";
+        return $"{baseUrl}/api/users/verify-email?email={encodedEmail}&token={encodedToken}";
     }
 
     private static string BuildEmailBody(string firstName, string confirmationUrl)
@@ -72,10 +75,18 @@ public class SmtpEmailSender(IOptions<EmailOptions> options, ILogger<SmtpEmailSe
         var encodedUrl = WebUtility.HtmlEncode(confirmationUrl);
 
         return $"""
-            <p>Hello {greetingName},</p>
-            <p>Please confirm your email address by clicking the link below:</p>
-            <p><a href="{encodedUrl}">Confirm email address</a></p>
-            <p>This link expires in 24 hours.</p>
+            <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                <h2>Hello {greetingName},</h2>
+                <p>Please confirm your email address by clicking the link below:</p>
+                <p>
+                    <a href="{encodedUrl}" style='display: inline-block; padding: 10px 20px; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px;'>
+                        Confirm email address
+                    </a>
+                </p>
+                <p style='margin-top: 20px; font-size: 12px; color: gray;'>
+                    This link expires in 24 hours. If the button doesn't work, copy and paste this link: <br/> {encodedUrl}
+                </p>
+            </div>
             """;
     }
 }

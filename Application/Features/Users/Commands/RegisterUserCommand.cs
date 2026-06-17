@@ -1,4 +1,4 @@
-using Application.Features.Users;
+using Application.Features.Users.Queries;
 using Application.Interfaces;
 using Common.CommonResponse;
 using Domain.Entities;

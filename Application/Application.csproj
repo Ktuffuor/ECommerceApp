@@ -10,12 +10,13 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Mapster" Version="10.0.7" />
     <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DTOs\UsersDto\" />
-    <Folder Include="Features\Users\Queries\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
