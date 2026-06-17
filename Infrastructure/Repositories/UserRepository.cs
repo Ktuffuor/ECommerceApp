@@ -33,6 +33,15 @@ public class UserRepository(ECommerceDbContext context) : IUserRepository
         return await context.Users
             .FirstOrDefaultAsync(u => u.EmailVerificationTokenHash == tokenHash);
     }
+    
+    public async Task<User?> GetUserByEmailAsync(string email)
+    {
+        // FirstOrDefaultAsync will return the User if it finds an exact email match, 
+        // or it will return null if the user doesn't exist.
+        return await context.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
+    }
+    
 
     public void UpdateUser(User user)
     {

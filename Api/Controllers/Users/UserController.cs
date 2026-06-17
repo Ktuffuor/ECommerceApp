@@ -1,23 +1,35 @@
 ﻿using Application.Features.Users.Commands;
+using Application.Features.Users.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Users;
+
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("CreateUser")]
-    public async Task<IActionResult> CreateUser([FromBody] RegisterUserCommand command )
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
     {
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpGet("ConfirmEmail")]
-    public async Task<IActionResult> ConfirmEmail([FromQuery] string token)
+    [HttpGet("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromQuery] string email, [FromQuery] string token)
     {
-        var response = await mediator.Send(new ConfirmEmailCommand { Token = token });
+        var command = new ConfirmEmailCommand { Email = email, Token = token };
+        var response = await mediator.Send(command);
+        return StatusCode(response.StatusCode, response);
+    }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUser([FromBody] LoginUserCommand command)
+    {
+        var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
 }
