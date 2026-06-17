@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Users;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController(IMediator mediator) : ControllerBase
@@ -17,7 +16,7 @@ public class UserController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
-
+    
     [HttpGet("verify-email")]
     public async Task<IActionResult> VerifyEmail([FromQuery] string email, [FromQuery] string token)
     {

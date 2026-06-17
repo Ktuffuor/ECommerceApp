@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\UsersDto\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

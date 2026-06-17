@@ -61,7 +61,7 @@ public class RegisterUserCommandHandler(
                 Email = email,
                 PasswordHash = passwordHasher.HashPassword(request.Password),
                 IsVerified = false,
-                EmailVerificationTokenHash = EmailVerificationToken.Hash(verificationToken),
+                EmailVerificationTokenHash = passwordHasher.HashPassword(verificationToken),
                 EmailVerificationTokenExpiresAt = DateTime.UtcNow.AddHours(24),
                 Role = "Customer"
             };
