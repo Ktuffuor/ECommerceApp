@@ -11,6 +11,3 @@
 # IDE files
 .idea/
 .vscode/
-
-git rm -r --cached .
-git add .
