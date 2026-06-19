@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.DTOs.ProductDto;
 using Application.Interfaces;
 using AutoMapper;
 using Common.CommonResponse;
@@ -15,7 +16,7 @@ public class UpdateProductCommand : IRequest<ApiResponse<ProductResponseDto>>
     public string ProductDesc { get; set; } = string.Empty;
     public decimal ProductPrice { get; set; }
     public int ProductStockQty { get; set; }
-    public string ProductBrand { get; set; }
+    public string ProductBrand { get; set; } = string.Empty;
 }
 
 public class UpdateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IProductRepository repository, ILogger<UpdateProductCommandHandler> logger, IValidator<UpdateProductCommand> validator) : IRequestHandler<UpdateProductCommand, ApiResponse<ProductResponseDto>>

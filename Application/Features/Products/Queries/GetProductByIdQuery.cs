@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.DTOs.ProductDto;
 using Application.Interfaces;
 using Common.CommonResponse;
 using MediatR;
@@ -19,34 +20,32 @@ public class GetProductByIdQueryHandler(IProductRepository repository, ILogger<G
         try
         {
             var result = await repository.GetProductByIdAsync(request.ProductId);
-            
-            if (result == null)
-            {
-                logger.LogWarning("Product with Id {Id} was not found.", request.ProductId);
+
+            if (result != null)
                 return new ApiResponse<ProductResponseDto>
                 {
-                    Success = false,
-                    StatusCode = 404,
-                    Message = $"Product with id: {request.ProductId} not found.",
-                    Data = null
+                    Success = true,
+                    StatusCode = 200,
+                    Message = $"Product with id: {request.ProductId} retrieved successfully.",
+                    Data = new ProductResponseDto
+                    {
+                        ProductId = result.ProductId,
+                        ProductName = result.ProductName,
+                        ProductDesc = result.ProductDesc,
+                        ProductPrice = result.ProductPrice,
+                        ProductStockQty = result.ProductStockQty,
+                        ProductBrand = result.ProductBrand
+                    }
                 };
-            }
-
+            logger.LogInformation("Product with Id {Id} was not found.", request.ProductId);
             return new ApiResponse<ProductResponseDto>
             {
-                Success = true,
-                StatusCode = 200,
-                Message = $"Product with id: {request.ProductId} retrieved successfully.",
-                Data = new ProductResponseDto
-                {
-                    ProductId = result.ProductId,
-                    ProductName = result.ProductName,
-                    ProductDesc = result.ProductDesc,
-                    ProductPrice = result.ProductPrice,
-                    ProductStockQty = result.ProductStockQty,
-                    ProductBrand =  result.ProductBrand
-                }
+                Success = false,
+                StatusCode = 404,
+                Message = $"Product with id: {request.ProductId} not found.",
+                Data = null
             };
+
         }
         catch (Exception e)
         {
