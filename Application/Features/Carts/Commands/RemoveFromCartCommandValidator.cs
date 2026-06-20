@@ -1,6 +1,12 @@
-﻿namespace Application.Features.Carts.Commands;
+﻿using FluentValidation;
 
-public class RemoveFromCartCommandValidator
+namespace Application.Features.Carts.Commands;
+
+public class RemoveFromCartCommandValidator : AbstractValidator<RemoveFromCartCommand>
 {
-    
+    public RemoveFromCartCommandValidator()
+    {
+        RuleFor(x => x.ProductId)
+            .NotEmpty().WithMessage("A valid Product ID is required to remove an item.");
+    }
 }
