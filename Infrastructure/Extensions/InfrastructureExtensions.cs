@@ -7,6 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Application.Interfaces.Carts;
+using Application.Interfaces.General;
+using Application.Interfaces.Payments;
+using Application.Interfaces.Products;
+using Application.Interfaces.Users;
 using Infrastructure.Services;
 
 namespace Infrastructure.Extensions;
@@ -21,11 +26,19 @@ public static class InfrastructureExtensions
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
-        services.AddScoped<IEmailSender, SmtpEmailSender>();
+        services.AddScoped<IEmailSender, SesEmailSender>();
         services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddHttpClient<IPaymentService, PaymentService>(client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5056"); 
+    
+            // Fail the request if the payment gateway takes more than 10 seconds to reply
+            client.Timeout = TimeSpan.FromSeconds(10); 
+        });
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

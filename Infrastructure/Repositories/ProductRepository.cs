@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Interfaces.Products;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,11 +24,13 @@ public class ProductRepository (ECommerceDbContext context) : IProductRepository
         return result.FirstOrDefault();
     }
     
-    public async Task<Product?> GetAllProductsAsync(string? searchText, int pageNumber, int pageSize)
+    public async Task<List<Product>> GetAllProductsAsync(string? searchText, int pageNumber, int pageSize)
     {
         var result = await context.Products
-            .FromSqlInterpolated($"EXEC spcGetAllProducts {searchText}, {pageNumber}, {pageSize}").ToListAsync();
-        return result.FirstOrDefault();
+            .FromSqlInterpolated($"EXEC spcGetAllProducts {searchText}, {pageNumber}, {pageSize}")
+            .AsNoTracking()
+            .ToListAsync();
+        return result;
     }
 
     public async Task<Product?> UpdateProductAsync(Guid productId, string name, string description, decimal price, decimal stockQuantity, string brand)

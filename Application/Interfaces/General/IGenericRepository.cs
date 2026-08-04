@@ -1,4 +1,4 @@
-﻿namespace Application.Interfaces;
+﻿namespace Application.Interfaces.General;
 
 public interface IGenericRepository<T> where T : class
 {

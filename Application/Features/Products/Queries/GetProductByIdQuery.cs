@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.DTOs.ProductDto;
 using Application.Interfaces;
+using Application.Interfaces.Products;
 using Common.CommonResponse;
 using MediatR;
 using Microsoft.Extensions.Logging;

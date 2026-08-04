@@ -1,5 +1,7 @@
 using Application.DTOs.ProductDto;
 using Application.Interfaces;
+using Application.Interfaces.General;
+using Application.Interfaces.Products;
 using Common.CommonResponse;
 using AutoMapper;
 using FluentValidation;

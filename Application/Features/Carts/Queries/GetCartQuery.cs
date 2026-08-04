@@ -1,6 +1,8 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Cart;
 using Application.Interfaces;
+using Application.Interfaces.Carts;
+using Application.Interfaces.Users;
 using Common.CommonResponse;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -9,15 +11,16 @@ namespace Application.Features.Carts.Queries;
 
 public class GetCartQuery : IRequest<ApiResponse<CartResponseDto>>
 {
-    public Guid UserId { get; set; }
 }
 
-public class GetCartQueryHandler(ICartRepository cartRepository, ILogger<GetCartQueryHandler> logger) 
+public class GetCartQueryHandler(ICartRepository cartRepository, ILogger<GetCartQueryHandler> logger, ICurrentUserService currentUserService) 
     : IRequestHandler<GetCartQuery, ApiResponse<CartResponseDto>>
 {
     public async Task<ApiResponse<CartResponseDto>> Handle(GetCartQuery request, CancellationToken cancellationToken)
     {
-        var cart = await cartRepository.GetCartByUserIdAsync(request.UserId);
+        var userId = currentUserService.UserId;
+        
+        var cart = await cartRepository.GetCartByUserIdAsync(userId);
 
         if (cart == null)
         {
@@ -44,7 +47,7 @@ public class GetCartQueryHandler(ICartRepository cartRepository, ILogger<GetCart
             }).ToList()
         };
 
-        logger.LogInformation("Successfully retrieved cart for user {UserId}", request.UserId);
+        logger.LogInformation("Successfully retrieved cart for user {UserId}", userId);
 
         return new ApiResponse<CartResponseDto>
         {

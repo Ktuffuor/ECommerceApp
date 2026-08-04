@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Interfaces.Users;
 using Common.CommonResponse;
 using MediatR;
 using Microsoft.Extensions.Logging;

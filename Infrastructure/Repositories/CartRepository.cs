@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.Carts;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ namespace Infrastructure.Repositories;
 
 public class CartRepository(ECommerceDbContext context) : ICartRepository
 {
-    public async Task<Cart?> GetCartByUserIdAsync(Guid userId)
+    public async Task<Cart?> GetCartByUserIdAsync(Guid? userId)
     {
         return await context.Carts
             .Include(c => c.Items)

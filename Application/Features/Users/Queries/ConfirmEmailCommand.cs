@@ -1,4 +1,7 @@
+using System.Text.Json.Serialization;
 using Application.Interfaces;
+using Application.Interfaces.General;
+using Application.Interfaces.Users;
 using Common.CommonResponse;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -7,6 +10,7 @@ namespace Application.Features.Users.Queries;
 
 public class ConfirmEmailCommand : IRequest<ApiResponse<bool>>
 {
+    [JsonPropertyName("UserEmail")]
     public string Email { get; set; } = string.Empty;
     public string Token { get; set; } = string.Empty;
 }

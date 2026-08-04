@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Application.Interfaces;
+using Application.Interfaces.General;
+using Application.Interfaces.Products;
 using Common.CommonResponse;
 using FluentValidation;
 using MediatR;
