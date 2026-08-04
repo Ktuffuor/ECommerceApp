@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.ProductDto;
 using Application.Interfaces;
+using Application.Interfaces.Products;
 using Common.CommonResponse;
 using Mapster;
 using MediatR;
@@ -22,17 +23,23 @@ public class GetAllProductsQueryHandler(IProductRepository repository, ILogger<G
     {
         try
         {
-            var result = await repository.GetAllProductsAsync(request.SearchText, request.PageNumber, request.PageSize);
+            var products = await repository.GetAllProductsAsync(request.SearchText, request.PageNumber, request.PageSize);
 
-            if (result != null)
+            if (products != null && products.Any())
+            {
+                var responseData = new GetAllProductsDto
+                {
+                    Products = products.Adapt<List<ProductDto>>()
+                };
+
                 return new ApiResponse<GetAllProductsDto>
                 {
                     Success = true,
                     StatusCode = 200,
                     Message = "Products were successfully retrieved.",
-                    Data = result.Adapt<GetAllProductsDto>()
+                    Data = responseData // This now contains the list
                 };
-
+            }
             logger.LogInformation("No products were found.");
             return new ApiResponse<GetAllProductsDto>
             {

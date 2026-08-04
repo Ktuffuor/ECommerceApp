@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.General;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

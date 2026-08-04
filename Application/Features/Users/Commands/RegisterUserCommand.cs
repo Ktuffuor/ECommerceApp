@@ -1,5 +1,7 @@
 using Application.Features.Users.Queries;
 using Application.Interfaces;
+using Application.Interfaces.General;
+using Application.Interfaces.Users;
 using Common.CommonResponse;
 using Domain.Entities;
 using FluentValidation;

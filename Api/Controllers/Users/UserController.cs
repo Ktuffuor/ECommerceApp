@@ -17,7 +17,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
     
-    [HttpGet("verify-email")]
+    [HttpPost("verify-email")]
     public async Task<IActionResult> VerifyEmail([FromQuery] string email, [FromQuery] string token)
     {
         var command = new ConfirmEmailCommand { Email = email, Token = token };
